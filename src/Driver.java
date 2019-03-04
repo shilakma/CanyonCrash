@@ -56,5 +56,7 @@ public class Driver {
 		}
 		
 		// Start race
+		Race race1 = new Race(raceTrack, pilots);
+		race1.runRace();
 	}
 }
