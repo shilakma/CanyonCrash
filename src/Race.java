@@ -1,5 +1,8 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 /**
  * 
  * @author R Travis Pierce
@@ -14,6 +17,7 @@ public class Race {
 	ArrayList<Pilot> placing = new ArrayList<Pilot>();
 	int laps = 3;
 	Scanner keyboard = new Scanner(System.in);
+	Random rand = new Random();
 	
 
 	// Need to get Track, Pilot/Ship stats
@@ -27,22 +31,203 @@ public class Race {
 	// Commence race by starting, then going through a sequence of Sections - allowing players to perform actions
 	// pertaining to the Section style and available attacks on available opponents, in order of current placing -
 	// a number of times equal to the number of laps specified.
-	public void runRace() {
-		System.out.println("ON YOUR MARKS...");
+	public void runRace() throws InterruptedException {
+		System.out.println("ON YOUR MARK...");
+		TimeUnit.SECONDS.sleep(1);
 		System.out.println("GET SET...");
+		TimeUnit.SECONDS.sleep(1);
 		System.out.println("GO!!!");
+		TimeUnit.SECONDS.sleep(1);
+		placing.addAll(pilots);			// Copy all pilots to placing
 		int currLap = 0;
 		int currSection = 0;
 		
+		determineInitialPlacing();
+		
+		// Announce the initial placing
+		System.out.println("ANNOUNCER: Straight out of the gate, it's " + placing.get(0).getPilotName() + "!!!");
+		for (int index = 1; index < placing.size(); ++index)
+		{
+			System.out.println("followed by " + placing.get(index).getPilotName() + "!!!");
+		}
+		System.out.println("!!!!!!!!!!");
+		TimeUnit.SECONDS.sleep(2);
+		System.out.println(); 				// BLANK SPACE
+		
+		// MAIN LOOP
 		while (currLap < laps)
 		{
 			System.out.println("LAP " + (currLap + 1));
-			while (currSection < (track.getSections().size()-1))
-			{
+			currSection = 0;
+			while (currSection < (track.getSections().size()))
+			{	
+				// Determine what type of Section this is based on what's present
+				int sectionType = track.getSections().get(currSection).getSectionType();
+				// Play it out
+				// if statement based on returned int value from determineSectionType
+				//	0 = TURN | 1 = JUMP | 2 = EVENT | 3 = STRAIGHTAWAY
 				
+				if (sectionType == 0) {					// TURN
+					System.out.println("ANNOUNCER: Looks like they're coming up on a turn!");
+					TimeUnit.SECONDS.sleep(1);
+					// Handle the Turn and PilotAction by order in placing
+					System.out.println("ANNOUNCER: In first place... it's... "
+							+ placing.get(0).getPilotName() + "!!!");
+					TimeUnit.SECONDS.sleep(1);
+					pilotAction(placing.get(0));
+					for (int index = 1; index < placing.size(); ++index)
+					{
+						System.out.println("ANNOUNCER: Next up... it's... "
+								+ placing.get(index).getPilotName() + "!!!");
+						TimeUnit.SECONDS.sleep(1);
+						pilotAction(placing.get(index));
+					}
+					// Everyone takes the Turn
+					takeTurn();
+					
+					
+				} else if (sectionType == 1) {			// JUMP
+					System.out.println("ANNOUNCER: Looks like they're coming up on a jump!");
+					TimeUnit.SECONDS.sleep(1);
+					// Handle the Jump and PilotAction by order in placing
+					
+				} else if (sectionType == 2) {			// EVENT
+					System.out.println("ANNOUNCER: I've never seen anything like this before!!");
+					TimeUnit.SECONDS.sleep(1);
+					// Handle the Event and PilotAction by order in placing
+					
+				} else if (sectionType == 3) {			// STRAIGHTAWAY
+					System.out.println("ANNOUNCER: Comin' up on a straightaway! "
+							+ "Should be smooth sailing from here...");
+					TimeUnit.SECONDS.sleep(1);
+					// Handle PilotAction by order in placing
+					
+				}
+				++currSection;
 			}
 			++currLap;
 		}
 	}
+	
+	// Determine initial placing based on ship Acceleration stats
+	public void determineInitialPlacing()
+	{
+		Collections.sort(placing);
+	}
+	
+	public void pilotAction(Pilot pilot) throws InterruptedException
+	{
+		Scanner keyboard = new Scanner(System.in);
+		System.out.println("What action will " + pilot.getPilotName() + " take??");
+		System.out.println("RAM OPPONENT | TAUNT OPPONENT | DROP MINE | FOCUS");
+		String userInput = keyboard.nextLine();
+		boolean validInput = false;
+		while (!(validInput))
+		{
+			if (userInput.equalsIgnoreCase("RAM OPPONENT"))
+				{
+					boolean validSecondary = false;
+					while (!(validSecondary))
+					{
+						System.out.println("Which opponent would you like to ram?");
+						for (int index = 0; index < placing.size(); ++index)
+						{
+							if (placing.get(index).equals(pilot)) {
+								continue;
+							}
+							System.out.print("| " + placing.get(index).getPilotName() + " |");
+						}
+						userInput = keyboard.nextLine();
+						for (int index = 0; index < placing.size(); ++index)
+						{
+							if (placing.get(index).equals(pilot)) {
+								if (userInput.equalsIgnoreCase(pilot.getPilotName()))
+								{
+									System.out.println("Pilots cannot ram themselves.");
+									TimeUnit.SECONDS.sleep(1);
+									break;
+								}
+								continue;
+							}
+							if (userInput.equalsIgnoreCase(placing.get(index).getPilotName()))
+							{
+								System.out.println(pilot.getPilotName() + " rammed " + placing.get(index).getPilotName() + "!!!");
+								TimeUnit.SECONDS.sleep(1);
+								// Take 10 points from ship's shields
+								placing.get(index).getShip().set(4, (placing.get(index).getShip().get(4) - 10));
+								System.out.println(placing.get(index).getPilotName() + "'s shields fell to " + placing.get(index).getShip().get(4) + ".");
+								TimeUnit.SECONDS.sleep(1);
+								validSecondary = true;
+							}
+						}
+					}
+					validInput = true;
+					break;
+				}
+			System.out.println("RAM OPPONENT | TAUNT OPPONENT | DROP MINE | FOCUS");
+			userInput = keyboard.nextLine();
+		}
+	}
+	
+	public void takeTurn() throws InterruptedException
+	{
+		ArrayList<Pilot> tempPlacing = new ArrayList<Pilot>();
+		tempPlacing.addAll(placing);
+		
+		// TAKE THE TURN
+		int rando = rand.nextInt(50);
+		// FIRST PLACE
+		System.out.println("ANNOUNCER: First around the bend is "
+				+ placing.get(0).getPilotName() + "!!!");
+		TimeUnit.SECONDS.sleep(1);
+		if (((placing.get(0).getShip().get(3)) + rando) >= 16)
+		{
+			System.out.println("ANNOUNCER: " + placing.get(0).getPilotName() + " made it"
+					+ " around the turn!");
+			TimeUnit.SECONDS.sleep(1);
+		} else {
+			Pilot tempPilot = placing.get(0);
+			tempPlacing.remove(0);
+			tempPlacing.add(tempPilot);
+			System.out.println("ANNOUNCER: Oooh... That's gonna cost 'em...");
+			System.out.println(placing.get(0).getPilotName() + " is now in place"
+					+ " " + placing.size() + ".");
+			TimeUnit.SECONDS.sleep(2);
+		}
+		// ALL OTHERS
+		for (int index = 1; index < placing.size(); ++index)
+		{
+			rando = rand.nextInt(50);
+			System.out.println("ANNOUNCER: Coming up..." + placing.get(index).getPilotName() + "!!!");
+			if (((placing.get(index).getShip().get(3)) + rando) >= 15)
+			{
+				System.out.println("ANNOUNCER: " + placing.get(index).getPilotName() + " made it"
+						+ " around the turn!");
+				TimeUnit.SECONDS.sleep(1);
+			} else {
+				Pilot tempPilot = placing.get(index);
+				int tempPlacingIndex = -1;
+				for (int k = 0; k < tempPlacing.size(); ++k)
+				{
+					if (tempPilot.equals(tempPlacing.get(k)))
+					{
+						tempPlacingIndex = k;
+					}
+				}
+				tempPlacing.remove(tempPlacingIndex);
+				tempPlacing.add(tempPilot);
+				System.out.println("ANNOUNCER: Oooh... That's gonna cost 'em...");
+				System.out.println(placing.get(index).getPilotName() + " is now in place"
+						+ " " + placing.size() + ".");
+				TimeUnit.SECONDS.sleep(2);
+			}
+		}
+		// COPY tempPlacing BACK TO placing
+		for (int index = 0; index < tempPlacing.size(); ++index)
+		{
+			placing.set(index, tempPlacing.get(index));
+		}
+	}
+	
 	// Declare a winner/placing.
 }

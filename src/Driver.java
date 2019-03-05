@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -11,7 +12,7 @@ import java.util.Scanner;
 
 public class Driver {
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		int numRacers = 0;
 		int startMines = 0;
@@ -58,5 +59,17 @@ public class Driver {
 		// Start race
 		Race race1 = new Race(raceTrack, pilots);
 		race1.runRace();
+		
+		// WINNER WINNER CHICKEN DINNER
+		System.out.println("ANNOUNCER: WOW!!! What a race!!!!");
+		TimeUnit.SECONDS.sleep(2);
+		System.out.println("ANNOUNCER: And the winner is...");
+		TimeUnit.SECONDS.sleep(2);
+		System.out.println("ANNOUNCER: " + race1.placing.get(0).getPilotName() + "!!!!!");
+		TimeUnit.SECONDS.sleep(2);
+		System.out.println("+++++++++++++++++++++++++++++++++++++++++");
+		System.out.println("THANK YOU FOR PLAYING CANYON CRASH");
+		System.out.println("©2019 PIERCE INTERNATIONAL, UNLIMITED");
+		System.out.println("Program by: R Travis Pierce");
 	}
 }

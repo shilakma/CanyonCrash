@@ -45,6 +45,7 @@ public class Track
 		readLine = br.readLine();				// PRIMER
 		while (readLine != null)
 		{
+			//readLine = br.readLine();
 			sections.add(new Section(readLine));
 			readLine = br.readLine();
 		}

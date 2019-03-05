@@ -10,15 +10,15 @@ import java.util.ArrayList;
  *
  */
 
-public class Pilot {
+public class Pilot implements Comparable<Pilot>{
 	String fileName;
 	
 	private String pilotName = "";
 	private int dexterity = 0;
 	private int willPower = 0;
 	private String shipName = "";
-	// Max Speed | Acceleration | Braking | Steering | Shields
 	private ArrayList<Integer> ship = new ArrayList<Integer>();
+	// Max Speed | Acceleration | Braking | Steering | Shields
 	private int mines = 0;
 	
 	public Pilot (String fileName)
@@ -56,13 +56,28 @@ public class Pilot {
 		shipName = br.readLine();		// Read in erroneous line
 		
 		
-		ship.add(Integer.parseInt(br.readLine()));
-		ship.add(Integer.parseInt(br.readLine()));
-		ship.add(Integer.parseInt(br.readLine()));
-		ship.add(Integer.parseInt(br.readLine()));
-		ship.add(Integer.parseInt(br.readLine()));
+		ship.add(Integer.parseInt(br.readLine()));	// MAX SPEED		0
+		ship.add(Integer.parseInt(br.readLine()));	// ACCELERATION		1
+		ship.add(Integer.parseInt(br.readLine()));	// BRAKING			2
+		ship.add(Integer.parseInt(br.readLine()));	// STEERING			3
+		ship.add(Integer.parseInt(br.readLine()));	// SHIELDS			4
 		
 		br.close();
+	}
+	
+	// Sort based on ship's Acceleration stat
+	@Override
+	public int compareTo(Pilot p)
+	{
+		if (this.getShip().get(1) > p.getShip().get(1))
+		{
+			return 1;
+		} else if (this.getShip().get(1) > p.getShip().get(1))
+		{
+			return -1;
+		} else {
+			return 0;
+		}
 	}
 
 	public String getPilotName() {

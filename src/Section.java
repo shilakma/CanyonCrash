@@ -8,26 +8,50 @@
 
 public class Section {
 
-	private boolean turn = false;
-	private boolean jump = false;
-	private boolean event = false;
+	private int sectionType = -1;
+	private boolean turn = false;			// 10,000
+	private boolean jump = false;			// 1,000
+	private boolean event = false;			// 100
+	// STRAIGHTAWAY							// 10
 	private int mines = 0;
 	
 	
 	public Section (String statString)
 	{
 		int stats = Integer.parseInt(statString);
-		if (stats > 999)
+		if (stats > 9999)
 		{
 			this.turn = true;
+			mines = stats - 10000;
+		} else if (stats > 999) {
+			this.jump = true;
 			mines = stats - 1000;
 		} else if (stats > 99) {
-			this.jump = true;
-			mines = stats - 100;
-		} else if (stats > 9) {
 			this.event = true;
-			mines = stats - 10;
+			mines = stats - 100;
+		} else {
+			mines = stats -10;
 		}
+		
+		determineSectionType();
+	}
+	
+	//	Determines the 
+	public void determineSectionType()
+	{
+		if (this.isTurn()) {
+			this.sectionType = 0;				// TURN
+		} else if (this.isJump()) {
+			this.sectionType = 1;				// JUMP
+		} else if (this.isEvent()) {
+			this.sectionType = 2;				// EVENT
+		} else {
+			this.sectionType = 3;				// STRAIGHTAWAY
+		}
+	}
+	
+	public int getSectionType() {
+		return sectionType;
 	}
 
 
