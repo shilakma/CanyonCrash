@@ -127,41 +127,7 @@ public class Race {
 		{
 			if (userInput.equalsIgnoreCase("RAM OPPONENT"))
 				{
-					boolean validSecondary = false;
-					while (!(validSecondary))
-					{
-						System.out.println("Which opponent would you like to ram?");
-						for (int index = 0; index < placing.size(); ++index)
-						{
-							if (placing.get(index).equals(pilot)) {
-								continue;
-							}
-							System.out.print("| " + placing.get(index).getPilotName() + " |");
-						}
-						userInput = keyboard.nextLine();
-						for (int index = 0; index < placing.size(); ++index)
-						{
-							if (placing.get(index).equals(pilot)) {
-								if (userInput.equalsIgnoreCase(pilot.getPilotName()))
-								{
-									System.out.println("Pilots cannot ram themselves.");
-									TimeUnit.SECONDS.sleep(PAUSE);
-									break;
-								}
-								continue;
-							}
-							if (userInput.equalsIgnoreCase(placing.get(index).getPilotName()))
-							{
-								System.out.println(pilot.getPilotName() + " rammed " + placing.get(index).getPilotName() + "!!!");
-								TimeUnit.SECONDS.sleep(PAUSE);
-								// Take 10 points from ship's shields
-								placing.get(index).getShip().set(4, (placing.get(index).getShip().get(4) - 10));
-								System.out.println(placing.get(index).getPilotName() + "'s shields fell to " + placing.get(index).getShip().get(4) + ".");
-								TimeUnit.SECONDS.sleep(PAUSE);
-								validSecondary = true;
-							}
-						}
-					}
+					ramOpponent(pilot, userInput);
 					validInput = true;
 					break;
 				}
@@ -227,6 +193,46 @@ public class Race {
 		for (int index = 0; index < tempPlacing.size(); ++index)
 		{
 			placing.set(index, tempPlacing.get(index));
+		}
+	}
+	
+	public void ramOpponent(Pilot pilot, String userInput) throws InterruptedException 
+	{
+		Scanner keyboard = new Scanner(System.in);
+		boolean validSecondary = false;
+		while (!(validSecondary))
+		{
+			System.out.println("Which opponent would you like to ram?");
+			for (int index = 0; index < placing.size(); ++index)
+			{
+				if (placing.get(index).equals(pilot)) {
+					continue;
+				}
+				System.out.print("| " + placing.get(index).getPilotName() + " |");
+			}
+			userInput = keyboard.nextLine();
+			for (int index = 0; index < placing.size(); ++index)
+			{
+				if (placing.get(index).equals(pilot)) {
+					if (userInput.equalsIgnoreCase(pilot.getPilotName()))
+					{
+						System.out.println("Pilots cannot ram themselves.");
+						TimeUnit.SECONDS.sleep(PAUSE);
+						break;
+					}
+					continue;
+				}
+				if (userInput.equalsIgnoreCase(placing.get(index).getPilotName()))
+				{
+					System.out.println(pilot.getPilotName() + " rammed " + placing.get(index).getPilotName() + "!!!");
+					TimeUnit.SECONDS.sleep(PAUSE);
+					// Take 10 points from ship's shields
+					placing.get(index).getShip().set(4, (placing.get(index).getShip().get(4) - 10));
+					System.out.println(placing.get(index).getPilotName() + "'s shields fell to " + placing.get(index).getShip().get(4) + ".");
+					TimeUnit.SECONDS.sleep(PAUSE);
+					validSecondary = true;
+				}
+			}
 		}
 	}
 }
