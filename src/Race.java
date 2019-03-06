@@ -138,6 +138,10 @@ public class Race {
 				dropMine(pilot, currSection);
 				validInput = true;
 				break;
+			} else if (userInput.equalsIgnoreCase("FOCUS")) {
+				focus(pilot, currSection);
+				validInput = true;
+				break;
 			}
 			System.out.println("RAM OPPONENT | TAUNT OPPONENT | DROP MINE | FOCUS");
 			userInput = keyboard.nextLine();
@@ -279,8 +283,8 @@ public class Race {
 					pilot.setWillPower(pilot.getWillPower() - 1);
 					System.out.println(placing.get(index).getPilotName() + "'s willpower fell to " + placing.get(index).getWillPower() + ".");
 					TimeUnit.SECONDS.sleep(1);
-					System.out.println(pilot.getPilotName() + "'s willpower rose to " + pilot.getWillPower() + ".");
-					TimeUnit.SECONDS.sleep(PAUSE);
+					//System.out.println(pilot.getPilotName() + "'s willpower rose to " + pilot.getWillPower() + ".");
+					//TimeUnit.SECONDS.sleep(PAUSE);
 					validSecondary = true;
 				}
 			}
@@ -298,5 +302,15 @@ public class Race {
 			System.out.println("ANNOUNCER: Looks like " + pilot.getPilotName() + " dropped a mine on the track!");
 			TimeUnit.SECONDS.sleep(PAUSE);
 		}
+	}
+	
+	public void focus(Pilot pilot, int currSection) throws InterruptedException 
+	{
+		pilot.setDexterity(pilot.getDexterity() + 1);
+		pilot.setWillPower(pilot.getWillPower() + 1);
+		System.out.println(pilot.getPilotName() + "'s dexterity rose to " + pilot.getDexterity() + ".");
+		TimeUnit.SECONDS.sleep(PAUSE);
+		System.out.println(pilot.getPilotName() + "'s willpower rose to " + pilot.getWillPower() + ".");
+		TimeUnit.SECONDS.sleep(PAUSE);
 	}
 }
