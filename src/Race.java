@@ -75,13 +75,13 @@ public class Race {
 					System.out.println("ANNOUNCER: In first place... it's... "
 							+ placing.get(0).getPilotName() + "!!!");
 					TimeUnit.SECONDS.sleep(PAUSE);
-					pilotAction(placing.get(0));
+					pilotAction(placing.get(0), currSection);
 					for (int index = 1; index < placing.size(); ++index)
 					{
 						System.out.println("ANNOUNCER: Next up... it's... "
 								+ placing.get(index).getPilotName() + "!!!");
 						TimeUnit.SECONDS.sleep(PAUSE);
-						pilotAction(placing.get(index));
+						pilotAction(placing.get(index), currSection);
 					}
 					// Everyone takes the Turn
 					takeTurn();
@@ -116,7 +116,7 @@ public class Race {
 		Collections.sort(placing);
 	}
 	
-	public void pilotAction(Pilot pilot) throws InterruptedException
+	public void pilotAction(Pilot pilot, int currSection) throws InterruptedException
 	{
 		Scanner keyboard = new Scanner(System.in);
 		System.out.println("What action will " + pilot.getPilotName() + " take??");
@@ -130,9 +130,12 @@ public class Race {
 				ramOpponent(pilot, userInput);
 				validInput = true;
 				break;
-			} else if (userInput.equalsIgnoreCase("TAUNT OPPONENT"))
-			{
+			} else if (userInput.equalsIgnoreCase("TAUNT OPPONENT")) {
 				tauntOpponent(pilot, userInput);
+				validInput = true;
+				break;
+			} else if (userInput.equalsIgnoreCase("DROP MINE")) {
+				dropMine(pilot, currSection);
 				validInput = true;
 				break;
 			}
@@ -281,6 +284,19 @@ public class Race {
 					validSecondary = true;
 				}
 			}
+		}
+	}
+	
+	public void dropMine(Pilot pilot, int currSection) throws InterruptedException 
+	{
+		if (pilot.getMines() > 0)
+		{
+			track.getSections().get(currSection).setMines(track.getSections().get(currSection).getMines() + 1);
+			pilot.setMines(pilot.getMines() - 1);
+			System.out.println("ANNOUNCER: What's this???");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.println("ANNOUNCER: Looks like " + pilot.getPilotName() + " dropped a mine on the track!");
+			TimeUnit.SECONDS.sleep(PAUSE);
 		}
 	}
 }
