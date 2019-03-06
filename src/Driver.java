@@ -66,7 +66,7 @@ public class Driver {
 		System.out.println("ANNOUNCER: And the winner is...");
 		TimeUnit.SECONDS.sleep(2);
 		System.out.println("ANNOUNCER: " + race1.placing.get(0).getPilotName() + "!!!!!");
-		TimeUnit.SECONDS.sleep(2);
+		TimeUnit.SECONDS.sleep(3);
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++");
 		System.out.println("THANK YOU FOR PLAYING CANYON CRASH");
 		System.out.println("©2019 PIERCE INTERNATIONAL, UNLIMITED");
