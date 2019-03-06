@@ -126,11 +126,16 @@ public class Race {
 		while (!(validInput))
 		{
 			if (userInput.equalsIgnoreCase("RAM OPPONENT"))
-				{
-					ramOpponent(pilot, userInput);
-					validInput = true;
-					break;
-				}
+			{
+				ramOpponent(pilot, userInput);
+				validInput = true;
+				break;
+			} else if (userInput.equalsIgnoreCase("TAUNT OPPONENT"))
+			{
+				tauntOpponent(pilot, userInput);
+				validInput = true;
+				break;
+			}
 			System.out.println("RAM OPPONENT | TAUNT OPPONENT | DROP MINE | FOCUS");
 			userInput = keyboard.nextLine();
 		}
@@ -229,6 +234,49 @@ public class Race {
 					// Take 10 points from ship's shields
 					placing.get(index).getShip().set(4, (placing.get(index).getShip().get(4) - 10));
 					System.out.println(placing.get(index).getPilotName() + "'s shields fell to " + placing.get(index).getShip().get(4) + ".");
+					TimeUnit.SECONDS.sleep(PAUSE);
+					validSecondary = true;
+				}
+			}
+		}
+	}
+	
+	public void tauntOpponent(Pilot pilot, String userInput) throws InterruptedException 
+	{
+		Scanner keyboard = new Scanner(System.in);
+		boolean validSecondary = false;
+		while (!(validSecondary))
+		{
+			System.out.println("Which opponent would you like to taunt?");
+			for (int index = 0; index < placing.size(); ++index)
+			{
+				if (placing.get(index).equals(pilot)) {
+					continue;
+				}
+				System.out.print("| " + placing.get(index).getPilotName() + " |");
+			}
+			userInput = keyboard.nextLine();
+			for (int index = 0; index < placing.size(); ++index)
+			{
+				if (placing.get(index).equals(pilot)) {
+					if (userInput.equalsIgnoreCase(pilot.getPilotName()))
+					{
+						System.out.println("Pilots cannot taunt themselves.");
+						TimeUnit.SECONDS.sleep(PAUSE);
+						break;
+					}
+					continue;
+				}
+				if (userInput.equalsIgnoreCase(placing.get(index).getPilotName()))
+				{
+					System.out.println(pilot.getPilotName() + " taunted " + placing.get(index).getPilotName() + "!!!");
+					TimeUnit.SECONDS.sleep(PAUSE);
+					// Lower opponent's willpower while raising your own
+					placing.get(index).setWillPower(placing.get(index).getWillPower() - 1);
+					pilot.setWillPower(pilot.getWillPower() - 1);
+					System.out.println(placing.get(index).getPilotName() + "'s willpower fell to " + placing.get(index).getWillPower() + ".");
+					TimeUnit.SECONDS.sleep(1);
+					System.out.println(pilot.getPilotName() + "'s willpower rose to " + pilot.getWillPower() + ".");
 					TimeUnit.SECONDS.sleep(PAUSE);
 					validSecondary = true;
 				}
