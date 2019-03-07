@@ -75,12 +75,15 @@ public class Race {
 					System.out.println("ANNOUNCER: In first place... it's... "
 							+ placing.get(0).getPilotName() + "!!!");
 					TimeUnit.SECONDS.sleep(PAUSE);
+// Check for mines and run the mine dodge/damage
+					mineCheck(placing.get(0), currSection);
 					pilotAction(placing.get(0), currSection);
 					for (int index = 1; index < placing.size(); ++index)
 					{
 						System.out.println("ANNOUNCER: Next up... it's... "
 								+ placing.get(index).getPilotName() + "!!!");
 						TimeUnit.SECONDS.sleep(PAUSE);
+						mineCheck(placing.get(index), currSection);
 						pilotAction(placing.get(index), currSection);
 					}
 					// Everyone takes the Turn
@@ -114,6 +117,24 @@ public class Race {
 	public void determineInitialPlacing()
 	{
 		Collections.sort(placing);
+	}
+	
+	public void mineCheck(Pilot pilot, int currSection) throws InterruptedException
+	{
+		if (track.getSections().get(currSection).getMines() > 0)
+		{
+			// Roll against the mine using pilot's dexterity
+			int dieFaceNum = 50;
+			int rando = rand.nextInt(dieFaceNum);
+			if ((pilot.getDexterity() + rando) < 15)
+			{
+				System.out.println("ANNOUNCER: Looks like " + pilot.getPilotName() + " triggered a mine!!");
+				TimeUnit.SECONDS.sleep(PAUSE);
+				pilot.getShip().set(4, pilot.getShip().get(4) - 15);	// Decrement shields by 15.
+				System.out.println(pilot.getPilotName() + "'s shield fell to " + pilot.getShip().get(4));
+				TimeUnit.SECONDS.sleep(PAUSE*2);
+			}
+		}
 	}
 	
 	public void pilotAction(Pilot pilot, int currSection) throws InterruptedException
