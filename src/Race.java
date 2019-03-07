@@ -15,6 +15,7 @@ public class Race {
 	Track track;
 	ArrayList<Pilot> pilots;
 	ArrayList<Pilot> placing = new ArrayList<Pilot>();
+	ArrayList<Pilot> finalPlacing = new ArrayList<Pilot>();
 	int laps = 3;
 	Scanner keyboard = new Scanner(System.in);
 	Random rand = new Random();
@@ -40,6 +41,7 @@ public class Race {
 		System.out.println("GO!!!");
 		TimeUnit.SECONDS.sleep(PAUSE);
 		placing.addAll(pilots);			// Copy all pilots to placing
+		finalPlacing.addAll(placing);
 		int currLap = 0;
 		int currSection = 0;
 		
@@ -58,10 +60,35 @@ public class Race {
 		// MAIN LOOP
 		while (currLap < laps)
 		{
-			System.out.println("LAP " + (currLap + 1));
+			System.out.println("\nLAP " + (currLap + 1));
 			currSection = 0;
 			while (currSection < (track.getSections().size()))
 			{	
+				// Remove battered contestants
+				// TODO: make it order battered contestants in order of their removal from race placing
+				for (int index = 0; index < placing.size(); ++index)
+				{
+					if (placing.get(index).getShip().get(4) <= 0)
+					{	
+						System.out.print("ANNOUNCER: " + placing.get(index).getPilotName() + " is OUT of the race");
+						TimeUnit.MILLISECONDS.sleep(500);
+						System.out.print(".");
+						TimeUnit.MILLISECONDS.sleep(500);
+						System.out.print(".");
+						TimeUnit.MILLISECONDS.sleep(500);
+						System.out.println(".");
+						TimeUnit.SECONDS.sleep(PAUSE*2);
+						
+						Pilot tempPilot = placing.get(index);
+						placing.remove(index);
+						finalPlacing.addAll(placing);
+						finalPlacing.add(tempPilot);
+					}
+				}
+				if (placing.size() == 1)
+				{
+					break;
+				}
 				// Determine what type of Section this is based on what's present
 				int sectionType = track.getSections().get(currSection).getSectionType();
 				// Play it out
@@ -75,8 +102,10 @@ public class Race {
 					System.out.println("ANNOUNCER: In first place... it's... "
 							+ placing.get(0).getPilotName() + "!!!");
 					TimeUnit.SECONDS.sleep(PAUSE);
-// Check for mines and run the mine dodge/damage
+					
+					// Check for mines and run the mine dodge/damage
 					mineCheck(placing.get(0), currSection);
+					// PilotAction
 					pilotAction(placing.get(0), currSection);
 					for (int index = 1; index < placing.size(); ++index)
 					{
@@ -111,6 +140,11 @@ public class Race {
 			}
 			++currLap;
 		}
+		// Fill the finalPlacing with the remaining pilots in proper order, maintaining battered contestant list
+		for (int index = 0; index < placing.size(); ++index)
+		{
+			finalPlacing.set(index, placing.get(index));
+		}
 	}
 	
 	// Determine initial placing based on ship Acceleration stats
@@ -125,13 +159,14 @@ public class Race {
 		{
 			// Roll against the mine using pilot's dexterity
 			int dieFaceNum = 50;
+			int mineDodgeLimit = 30;
 			int rando = rand.nextInt(dieFaceNum);
-			if ((pilot.getDexterity() + rando) < 15)
+			if ((pilot.getDexterity() + rando) < mineDodgeLimit)
 			{
 				System.out.println("ANNOUNCER: Looks like " + pilot.getPilotName() + " triggered a mine!!");
 				TimeUnit.SECONDS.sleep(PAUSE);
 				pilot.getShip().set(4, pilot.getShip().get(4) - 15);	// Decrement shields by 15.
-				System.out.println(pilot.getPilotName() + "'s shield fell to " + pilot.getShip().get(4));
+				System.out.println(pilot.getPilotName() + "'s shields fell to " + pilot.getShip().get(4));
 				TimeUnit.SECONDS.sleep(PAUSE*2);
 			}
 		}
@@ -319,9 +354,10 @@ public class Race {
 			track.getSections().get(currSection).setMines(track.getSections().get(currSection).getMines() + 1);
 			pilot.setMines(pilot.getMines() - 1);
 			System.out.println("ANNOUNCER: What's this???");
-			TimeUnit.SECONDS.sleep(PAUSE);
+			TimeUnit.SECONDS.sleep(PAUSE/2);
 			System.out.println("ANNOUNCER: Looks like " + pilot.getPilotName() + " dropped a mine on the track!");
 			TimeUnit.SECONDS.sleep(PAUSE);
+			//System.out.println(track.getSections().get(currSection).getMines()); //TEST
 		}
 	}
 	
