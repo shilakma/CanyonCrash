@@ -38,7 +38,13 @@ public class Race {
 		TimeUnit.SECONDS.sleep(1);
 		System.out.println("GET SET...");
 		TimeUnit.SECONDS.sleep(1);
-		System.out.println("GO!!!");
+		System.out.print("GO");
+		TimeUnit.MILLISECONDS.sleep(500);
+		System.out.print("!");
+		TimeUnit.MILLISECONDS.sleep(500);
+		System.out.print("!");
+		TimeUnit.MILLISECONDS.sleep(500);
+		System.out.println("!");
 		TimeUnit.SECONDS.sleep(PAUSE);
 		placing.addAll(pilots);			// Copy all pilots to placing
 		finalPlacing.addAll(placing);
@@ -107,8 +113,10 @@ public class Race {
 					mineCheck(placing.get(0), currSection);
 					// PilotAction
 					pilotAction(placing.get(0), currSection);
+					// TODO: Check if first place pilot has 0 shields
 					for (int index = 1; index < placing.size(); ++index)
 					{
+						// TODO: Check if pilot has 0 shields
 						System.out.println("ANNOUNCER: Next up... it's... "
 								+ placing.get(index).getPilotName() + "!!!");
 						TimeUnit.SECONDS.sleep(PAUSE);
@@ -163,6 +171,8 @@ public class Race {
 			int rando = rand.nextInt(dieFaceNum);
 			if ((pilot.getDexterity() + rando) < mineDodgeLimit)
 			{
+				// Remove offending mine from currSection 
+				track.getSections().get(currSection).setMines(track.getSections().get(currSection).getMines() - 1);
 				System.out.println("ANNOUNCER: Looks like " + pilot.getPilotName() + " triggered a mine!!");
 				TimeUnit.SECONDS.sleep(PAUSE);
 				pilot.getShip().set(4, pilot.getShip().get(4) - 15);	// Decrement shields by 15.
@@ -234,6 +244,7 @@ public class Race {
 		{
 			rando = rand.nextInt(50);
 			System.out.println("ANNOUNCER: Coming up..." + placing.get(index).getPilotName() + "!!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
 			if (((placing.get(index).getShip().get(3)) + rando) >= 15)
 			{
 				System.out.println("ANNOUNCER: " + placing.get(index).getPilotName() + " made it"
