@@ -419,14 +419,54 @@ public class Race {
 	public void takeEvent() throws InterruptedException
 	{
 		// EVENT
-		int rando = rand.nextInt(pilots.size());
-		placing.get(rando).setDexterity(placing.get(rando).getDexterity() - 1);
-		// FIRST PLACE
-		System.out.println("ANNOUNCER: Something STRANGE has happened to "
-				+ placing.get(rando).getPilotName() + "!!!");
-		TimeUnit.SECONDS.sleep(PAUSE);
-		System.out.println(placing.get(rando).getPilotName() + "'s dexterity fell to " + placing.get(rando).getDexterity() + ".");
-		TimeUnit.SECONDS.sleep(PAUSE*2);
+		int randPilot = rand.nextInt(pilots.size());
+		int randEffect = rand.nextInt(4);
+		
+		switch (randEffect)
+		{
+		case (0) :			// DEXTERITY -1
+			{
+			placing.get(randPilot).setDexterity(placing.get(randPilot).getDexterity() - 1);
+			System.out.println("ANNOUNCER: Something STRANGE has happened to "
+					+ placing.get(randPilot).getPilotName() + "!!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.println(placing.get(randPilot).getPilotName() + "'s dexterity fell to " + placing.get(randPilot).getDexterity() + ".");
+			TimeUnit.SECONDS.sleep(PAUSE*2);
+			break;
+			}
+		case (1) :			// MINES +1
+			{
+			placing.get(randPilot).setMines(placing.get(randPilot).getMines() + 1);;
+			System.out.println("ANNOUNCER: Looks like "
+					+ placing.get(randPilot).getPilotName() + " was storing an extra mine!!!");
+			TimeUnit.SECONDS.sleep(PAUSE*2);
+			break;
+			}
+		case (2) :			// SHIELDS -10
+			{
+			placing.get(randPilot).getShip().set(4, (placing.get(randPilot).getShip().get(4) - 10));
+			System.out.println("ANNOUNCER: WATCH OUT, "
+					+ placing.get(randPilot).getPilotName() + "!!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.println("ANNOUNCER: That MASSIVE creature just took a bite out of "
+					+ placing.get(randPilot).getPilotName() + "!!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.println(placing.get(randPilot).getPilotName() + "'s shields fell to " + placing.get(randPilot).getShip().get(4) + ".");
+			TimeUnit.SECONDS.sleep(PAUSE*2);
+			break;
+			}
+		case (3) :			// ACCELERATION +1
+			{
+			placing.get(randPilot).getShip().set(1, placing.get(randPilot).getShip().get(1) + 1);
+			System.out.println("ANNOUNCER: What's this energy source manifesting on the track??");
+			System.out.println("ANNOUNCER: Looks like it wants to help out"
+					+ placing.get(randPilot).getPilotName() + "!!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.println(placing.get(randPilot).getPilotName() + "'s acceleration rose to " + placing.get(randPilot).getShip().get(1) + ".");
+			TimeUnit.SECONDS.sleep(PAUSE*2);
+			break;
+			}
+		}
 		
 	}
 	
