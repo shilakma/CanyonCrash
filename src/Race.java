@@ -104,25 +104,7 @@ public class Race {
 				if (sectionType == 0) {					// TURN
 					System.out.println("ANNOUNCER: Looks like they're coming up on a turn!");
 					TimeUnit.SECONDS.sleep(PAUSE);
-					// Handle the Turn and PilotAction by order in placing
-					System.out.println("ANNOUNCER: In first place... it's... "
-							+ placing.get(0).getPilotName() + "!!!");
-					TimeUnit.SECONDS.sleep(PAUSE);
-					
-					// Check for mines and run the mine dodge/damage
-					mineCheck(placing.get(0), currSection);
-					// PilotAction
-					pilotAction(placing.get(0), currSection);
-					// TODO: Check if first place pilot has 0 shields
-					for (int index = 1; index < placing.size(); ++index)
-					{
-						// TODO: Check if pilot has 0 shields
-						System.out.println("ANNOUNCER: Next up... it's... "
-								+ placing.get(index).getPilotName() + "!!!");
-						TimeUnit.SECONDS.sleep(PAUSE);
-						mineCheck(placing.get(index), currSection);
-						pilotAction(placing.get(index), currSection);
-					}
+					preSection(currSection);
 					// Everyone takes the Turn
 					takeTurn();
 					
@@ -130,7 +112,9 @@ public class Race {
 				} else if (sectionType == 1) {			// JUMP
 					System.out.println("ANNOUNCER: Looks like they're coming up on a jump!");
 					TimeUnit.SECONDS.sleep(PAUSE);
-					// Handle the Jump and PilotAction by order in placing
+					preSection(currSection);
+					// Everyone takes the Turn
+					takeJump();
 					
 				} else if (sectionType == 2) {			// EVENT
 					System.out.println("ANNOUNCER: I've never seen anything like this before!!");
@@ -142,6 +126,7 @@ public class Race {
 							+ "Should be smooth sailing from here...");
 					TimeUnit.SECONDS.sleep(PAUSE);
 					// Handle PilotAction by order in placing
+					preSection(currSection);
 					
 				}
 				++currSection;
@@ -161,6 +146,39 @@ public class Race {
 		Collections.sort(placing);
 	}
 	
+	public void preSection(int currSection) throws InterruptedException
+	{
+		// Handle the Turn/Jump/Event/Straightaway and PilotAction by order in placing
+		System.out.println("ANNOUNCER: In first place... it's... "
+				+ placing.get(0).getPilotName() + "!!!");
+		TimeUnit.SECONDS.sleep(PAUSE);
+		
+		// Check for mines and run the mine dodge/damage
+		mineCheck(placing.get(0), currSection);
+		// PilotAction
+		pilotAction(placing.get(0), currSection);
+		// TODO: Check if first place pilot has 0 shields
+		for (int index = 1; index < placing.size(); ++index)
+		{
+			// TODO: Check if pilot has 0 shields
+			System.out.println("ANNOUNCER: Next up... it's... "
+					+ placing.get(index).getPilotName() + "!!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			mineCheck(placing.get(index), currSection);
+			pilotAction(placing.get(index), currSection);
+		}
+	}
+	
+	/**
+	 * Checks the currently occupied section of track for the presence of mines
+	 * then then rolls the pilot's dexterity value added to a randomly generated 
+	 * integer as high as 50 against 30. If the pilot fails the roll, 15 points
+	 * are deducted from their ship's shields.
+	 * 
+	 * @param pilot
+	 * @param currSection
+	 * @throws InterruptedException
+	 */
 	public void mineCheck(Pilot pilot, int currSection) throws InterruptedException
 	{
 		if (track.getSections().get(currSection).getMines() > 0)
@@ -182,38 +200,81 @@ public class Race {
 		}
 	}
 	
+	
+	/**
+	 * Handles the 'dropdown' list of available player actions presented at each
+	 * section of the track.
+	 * 
+	 * @param pilot
+	 * @param currSection
+	 * @throws InterruptedException
+	 */
 	public void pilotAction(Pilot pilot, int currSection) throws InterruptedException
 	{
 		Scanner keyboard = new Scanner(System.in);
-		System.out.println("What action will " + pilot.getPilotName() + " take??");
-		System.out.println("RAM OPPONENT | TAUNT OPPONENT | DROP MINE | FOCUS");
-		String userInput = keyboard.nextLine();
-		boolean validInput = false;
-		while (!(validInput))
-		{
-			if (userInput.equalsIgnoreCase("RAM OPPONENT"))
-			{
-				ramOpponent(pilot, userInput);
-				validInput = true;
-				break;
-			} else if (userInput.equalsIgnoreCase("TAUNT OPPONENT")) {
-				tauntOpponent(pilot, userInput);
-				validInput = true;
-				break;
-			} else if (userInput.equalsIgnoreCase("DROP MINE")) {
-				dropMine(pilot, currSection);
-				validInput = true;
-				break;
-			} else if (userInput.equalsIgnoreCase("FOCUS")) {
-				focus(pilot, currSection);
-				validInput = true;
-				break;
-			}
+		
+		if (pilot.getMines() > 0) {
+			System.out.println("What action will " + pilot.getPilotName() + " take??");
 			System.out.println("RAM OPPONENT | TAUNT OPPONENT | DROP MINE | FOCUS");
-			userInput = keyboard.nextLine();
+			String userInput = keyboard.nextLine();
+			boolean validInput = false;
+			while (!(validInput))
+			{
+				if (userInput.equalsIgnoreCase("RAM OPPONENT"))
+				{
+					ramOpponent(pilot, userInput);
+					validInput = true;
+					break;
+				} else if (userInput.equalsIgnoreCase("TAUNT OPPONENT")) {
+					tauntOpponent(pilot, userInput);
+					validInput = true;
+					break;
+				} else if (userInput.equalsIgnoreCase("DROP MINE")) {
+					dropMine(pilot, currSection);
+					validInput = true;
+					break;
+				} else if (userInput.equalsIgnoreCase("FOCUS")) {
+					focus(pilot, currSection);
+					validInput = true;
+					break;
+				}
+				System.out.println("RAM OPPONENT | TAUNT OPPONENT | DROP MINE | FOCUS");
+				userInput = keyboard.nextLine();
+			}
+		} else {
+			System.out.println("What action will " + pilot.getPilotName() + " take??");
+			System.out.println("RAM OPPONENT | TAUNT OPPONENT | FOCUS");
+			String userInput = keyboard.nextLine();
+			boolean validInput = false;
+			while (!(validInput))
+			{
+				if (userInput.equalsIgnoreCase("RAM OPPONENT"))
+				{
+					ramOpponent(pilot, userInput);
+					validInput = true;
+					break;
+				} else if (userInput.equalsIgnoreCase("TAUNT OPPONENT")) {
+					tauntOpponent(pilot, userInput);
+					validInput = true;
+					break;
+				} else if (userInput.equalsIgnoreCase("FOCUS")) {
+					focus(pilot, currSection);
+					validInput = true;
+					break;
+				}
+				System.out.println("RAM OPPONENT | TAUNT OPPONENT | FOCUS");
+				userInput = keyboard.nextLine();
+			}
 		}
 	}
 	
+	
+	/**
+	 * Handles turns for the peloton, according to each pilot's ship's steering
+	 * mixed with a randomly generated integer rolled against the number 15
+	 * (16 for first place)
+	 * @throws InterruptedException
+	 */
 	public void takeTurn() throws InterruptedException
 	{
 		ArrayList<Pilot> tempPlacing = new ArrayList<Pilot>();
@@ -275,6 +336,90 @@ public class Race {
 		}
 	}
 	
+	/**
+	 * Handles jumps for the peloton, according to each pilot's ship's acceleration
+	 * mixed with a randomly generated integer rolled against the number 15
+	 * (16 for first place)
+	 */
+	public void takeJump() throws InterruptedException
+	{
+		ArrayList<Pilot> tempPlacing = new ArrayList<Pilot>();
+		tempPlacing.addAll(placing);
+		
+		// TAKE THE JUMP
+		int rando = rand.nextInt(50);
+		// FIRST PLACE
+		System.out.println("ANNOUNCER: First up the ramp is "
+				+ placing.get(0).getPilotName() + "!!!");
+		TimeUnit.SECONDS.sleep(PAUSE);
+		if (((placing.get(0).getShip().get(1)) + rando) >= 16)
+		{
+			System.out.println("ANNOUNCER: " + placing.get(0).getPilotName() + " made the jump!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
+		} else {
+			// TAKE DAMAGE
+			placing.get(0).getShip().set(4, (placing.get(0).getShip().get(4) - 10));
+			// LOSE PLACE
+			Pilot tempPilot = placing.get(0);
+			tempPlacing.remove(0);
+			tempPlacing.add(tempPilot);
+			System.out.println("ANNOUNCER: Oooh... That does NOT look good...");
+			System.out.println(placing.get(0).getPilotName() + "'s shields fell to " + placing.get(0).getShip().get(4) + ".");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.println(placing.get(0).getPilotName() + " is now in place"
+					+ " " + placing.size() + ".");
+			TimeUnit.SECONDS.sleep(PAUSE*2);
+		}
+		// ALL OTHERS
+		for (int index = 1; index < placing.size(); ++index)
+		{
+			rando = rand.nextInt(50);
+			System.out.println("ANNOUNCER: Next up's..." + placing.get(index).getPilotName() + "!!!");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			if (((placing.get(index).getShip().get(1)) + rando) >= 15)
+			{
+				System.out.println("ANNOUNCER: " + placing.get(index).getPilotName() + " made the jump!!");
+				TimeUnit.SECONDS.sleep(PAUSE);
+			} else {
+				// TAKE DAMAGE
+				placing.get(index).getShip().set(4, (placing.get(index).getShip().get(4) - 10));
+				// LOSE PLACE
+				Pilot tempPilot = placing.get(index);
+				int tempPlacingIndex = -1;
+				for (int k = 0; k < tempPlacing.size(); ++k)
+				{
+					if (tempPilot.equals(tempPlacing.get(k)))
+					{
+						tempPlacingIndex = k;
+					}
+				}
+				tempPlacing.remove(tempPlacingIndex);
+				tempPlacing.add(tempPilot);
+				System.out.println("ANNOUNCER: Oooh... That does NOT look good...");
+				System.out.println(placing.get(index).getPilotName() + "'s shields fell to " + placing.get(index).getShip().get(4) + ".");
+				TimeUnit.SECONDS.sleep(PAUSE);
+				System.out.println(placing.get(index).getPilotName() + " is now in place"
+						+ " " + placing.size() + ".");
+				TimeUnit.SECONDS.sleep(PAUSE*2);
+			}
+		}
+		// COPY tempPlacing BACK TO placing
+		for (int index = 0; index < tempPlacing.size(); ++index)
+		{
+			placing.set(index, tempPlacing.get(index));
+		}
+	}
+	
+	
+	/**
+	 * Handles the Ram Opponent pilot action by showing the player a list of available
+	 * opponents and allowing them to choose from whom they'll knock off
+	 * 10 shield points.
+	 * 
+	 * @param pilot
+	 * @param userInput
+	 * @throws InterruptedException
+	 */
 	public void ramOpponent(Pilot pilot, String userInput) throws InterruptedException 
 	{
 		Scanner keyboard = new Scanner(System.in);
@@ -315,6 +460,15 @@ public class Race {
 		}
 	}
 	
+	/**
+	 * Handles the Taunt Opponent pilot action by showing the player a list of available
+	 * opponents and allowing them to choose from whom they'll knock off
+	 * a single willpower point.
+	 * 
+	 * @param pilot
+	 * @param userInput
+	 * @throws InterruptedException
+	 */
 	public void tauntOpponent(Pilot pilot, String userInput) throws InterruptedException 
 	{
 		Scanner keyboard = new Scanner(System.in);
@@ -345,11 +499,12 @@ public class Race {
 				{
 					System.out.println(pilot.getPilotName() + " taunted " + placing.get(index).getPilotName() + "!!!");
 					TimeUnit.SECONDS.sleep(PAUSE);
-					// Lower opponent's willpower while raising your own
+					// Lower opponent's willpower
 					placing.get(index).setWillPower(placing.get(index).getWillPower() - 1);
 					pilot.setWillPower(pilot.getWillPower() - 1);
 					System.out.println(placing.get(index).getPilotName() + "'s willpower fell to " + placing.get(index).getWillPower() + ".");
 					TimeUnit.SECONDS.sleep(1);
+					// Raise pilot's willpower
 					//System.out.println(pilot.getPilotName() + "'s willpower rose to " + pilot.getWillPower() + ".");
 					//TimeUnit.SECONDS.sleep(PAUSE);
 					validSecondary = true;
@@ -358,6 +513,14 @@ public class Race {
 		}
 	}
 	
+	/**
+	 * Handles the Drop Mine pilot action by adding a mine to the currently occupied
+	 * section of track and reevaluating the pilot's mine supply.
+	 * 
+	 * @param pilot
+	 * @param currSection
+	 * @throws InterruptedException
+	 */
 	public void dropMine(Pilot pilot, int currSection) throws InterruptedException 
 	{
 		if (pilot.getMines() > 0)
@@ -372,6 +535,14 @@ public class Race {
 		}
 	}
 	
+	/**
+	 * Handles the Focus pilot action by raising the pilot's dexterity and willpower
+	 * field values by a single integer value.
+	 * 
+	 * @param pilot
+	 * @param currSection
+	 * @throws InterruptedException
+	 */
 	public void focus(Pilot pilot, int currSection) throws InterruptedException 
 	{
 		pilot.setDexterity(pilot.getDexterity() + 1);
