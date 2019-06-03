@@ -459,7 +459,7 @@ public class Race {
 			{
 			placing.get(randPilot).getShip().set(1, placing.get(randPilot).getShip().get(1) + 1);
 			System.out.println("ANNOUNCER: What's this energy source manifesting on the track??");
-			System.out.println("ANNOUNCER: Looks like it wants to help out"
+			System.out.println("ANNOUNCER: Looks like it wants to help out "
 					+ placing.get(randPilot).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
 			System.out.println(placing.get(randPilot).getPilotName() + "'s acceleration rose to " + placing.get(randPilot).getShip().get(1) + ".");
