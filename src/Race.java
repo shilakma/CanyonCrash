@@ -120,6 +120,8 @@ public class Race {
 					System.out.println("ANNOUNCER: I've never seen anything like this before!!");
 					TimeUnit.SECONDS.sleep(PAUSE);
 					// Handle the Event and PilotAction by order in placing
+					//preSection(currSection);
+					takeEvent();
 					
 				} else if (sectionType == 3) {			// STRAIGHTAWAY
 					System.out.println("ANNOUNCER: Comin' up on a straightaway! "
@@ -408,6 +410,24 @@ public class Race {
 		{
 			placing.set(index, tempPlacing.get(index));
 		}
+	}
+	
+	
+	/**
+	 * Randomly affects a randomly-selected pilot from the peloton.
+	 */
+	public void takeEvent() throws InterruptedException
+	{
+		// EVENT
+		int rando = rand.nextInt(pilots.size());
+		placing.get(rando).setDexterity(placing.get(rando).getDexterity() - 1);
+		// FIRST PLACE
+		System.out.println("ANNOUNCER: Something STRANGE has happened to "
+				+ placing.get(rando).getPilotName() + "!!!");
+		TimeUnit.SECONDS.sleep(PAUSE);
+		System.out.println(placing.get(rando).getPilotName() + "'s dexterity fell to " + placing.get(rando).getDexterity() + ".");
+		TimeUnit.SECONDS.sleep(PAUSE*2);
+		
 	}
 	
 	
