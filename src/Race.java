@@ -66,6 +66,7 @@ public class Race {
 		// MAIN LOOP
 		while (currLap < laps)
 		{
+			//TODO: remove battered pilots immediately. Check to end race as well!!!
 			System.out.println("\nLAP " + (currLap + 1));
 			currSection = 0;
 			while (currSection < (track.getSections().size()))
