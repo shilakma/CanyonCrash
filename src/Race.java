@@ -20,6 +20,8 @@ public class Race {
 	Scanner keyboard = new Scanner(System.in);
 	Random rand = new Random();
 	final int PAUSE = 2;
+	int currLap = 0;
+	int currSection = 0;
 	
 
 	// Need to get Track, Pilot/Ship stats
@@ -34,6 +36,7 @@ public class Race {
 	// pertaining to the Section style and available attacks on available opponents, in order of current placing -
 	// a number of times equal to the number of laps specified.
 	public void runRace() throws InterruptedException {
+		System.out.println("");
 		System.out.println("ON YOUR MARK...");
 		TimeUnit.SECONDS.sleep(1);
 		System.out.println("GET SET...");
@@ -48,8 +51,8 @@ public class Race {
 		TimeUnit.SECONDS.sleep(PAUSE);
 		placing.addAll(pilots);			// Copy all pilots to placing
 		finalPlacing.addAll(placing);
-		int currLap = 0;
-		int currSection = 0;
+		currLap = 0;
+		currSection = 0;
 		
 		determineInitialPlacing();
 		
@@ -63,12 +66,14 @@ public class Race {
 		TimeUnit.SECONDS.sleep(PAUSE*2);
 		System.out.println(); 				// BLANK SPACE
 		
+		
+		System.out.println("\nLAP " + (currLap + 1));
+		currSection = 0;
+		
 		// MAIN LOOP
 		while (currLap < laps)
 		{
 			//TODO: remove battered pilots immediately. Check to end race as well!!!
-			System.out.println("\nLAP " + (currLap + 1));
-			currSection = 0;
 			while (currSection < (track.getSections().size()))
 			{	
 				// Remove battered contestants
@@ -106,6 +111,10 @@ public class Race {
 					System.out.println("ANNOUNCER: Looks like they're coming up on a turn!");
 					TimeUnit.SECONDS.sleep(PAUSE);
 					preSection(currSection);
+					if (currLap >= laps)
+					{
+						return;
+					}
 					// Everyone takes the Turn
 					takeTurn();
 					
@@ -114,6 +123,10 @@ public class Race {
 					System.out.println("ANNOUNCER: Looks like they're coming up on a jump!");
 					TimeUnit.SECONDS.sleep(PAUSE);
 					preSection(currSection);
+					if (currLap >= laps)
+					{
+						return;
+					}
 					// Everyone takes the Turn
 					takeJump();
 					
@@ -128,6 +141,10 @@ public class Race {
 					System.out.println("ANNOUNCER: Comin' up on a straightaway! "
 							+ "Should be smooth sailing from here...");
 					TimeUnit.SECONDS.sleep(PAUSE);
+					if (currLap >= laps)
+					{
+						return;
+					}
 					// Handle PilotAction by order in placing
 					preSection(currSection);
 					
@@ -135,6 +152,8 @@ public class Race {
 				++currSection;
 			}
 			++currLap;
+			System.out.println("\nLAP " + (currLap + 1));
+			currSection = 0;
 		}
 		// Fill the finalPlacing with the remaining pilots in proper order, maintaining battered contestant list
 		for (int index = 0; index < placing.size(); ++index)
@@ -159,11 +178,21 @@ public class Race {
 		// Check for mines and run the mine dodge/damage
 		mineCheck(placing.get(0), currSection);
 		// PilotAction
-		pilotAction(placing.get(0), currSection);
 		// TODO: Check if first place pilot has 0 shields
+			if (placing.get(0).getShip().get(4) < 0)
+			{
+				currLap = 666;
+				return;
+			}
+		pilotAction(placing.get(0), currSection);
 		for (int index = 1; index < placing.size(); ++index)
 		{
 			// TODO: Check if pilot has 0 shields
+			if (placing.get(index).getShip().get(4) < 0)
+			{
+				currLap = 666;
+				return;
+			}
 			System.out.println("ANNOUNCER: Next up... it's... "
 					+ placing.get(index).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
@@ -449,8 +478,8 @@ public class Race {
 			System.out.println("ANNOUNCER: WATCH OUT, "
 					+ placing.get(randPilot).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
-			System.out.println("ANNOUNCER: That MASSIVE creature just took a bite out of "
-					+ placing.get(randPilot).getPilotName() + "!!!");
+			System.out.println("ANNOUNCER: That MASSIVE creature just took a bite out of the "
+					+ placing.get(randPilot).getShipName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
 			System.out.println(placing.get(randPilot).getPilotName() + "'s shields fell to " + placing.get(randPilot).getShip().get(4) + ".");
 			TimeUnit.SECONDS.sleep(PAUSE*2);
@@ -460,9 +489,9 @@ public class Race {
 			{
 			placing.get(randPilot).getShip().set(1, placing.get(randPilot).getShip().get(1) + 1);
 			System.out.print("ANNOUNCER: What's this energy source manifesting on the track?");
-			TimeUnit.SECONDS.sleep(PAUSE);
+			TimeUnit.MILLISECONDS.sleep(500);
 			System.out.print("?");
-			TimeUnit.SECONDS.sleep(PAUSE);
+			TimeUnit.MILLISECONDS.sleep(500);
 			System.out.println("?");
 			TimeUnit.SECONDS.sleep(PAUSE);
 			System.out.println("ANNOUNCER: Looks like it wants to help out "

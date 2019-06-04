@@ -52,16 +52,16 @@ public class Driver {
 				break;
 			}
 			
-			System.out.println("Which track will we be racing today?");
+			System.out.println("CHOOSE YOUR TRACK");
 			System.out.println("[Crash Canyon] || [Crag City] || [Big Rock Island] || [Outpost Pass]");
 			
 		}
 		Track raceTrack = new Track(trackSelection);
 		
 		// Get number of racers from user input
-		while(numRacers < 1 || numRacers > 8)
+		while(numRacers < 2 || numRacers > 8)
 		{
-			System.out.println("How many racers? [1 - 8]");
+			System.out.println("CHOOSE NUMBER of RACERS [2 - 8]");
 			numRacers = Integer.parseInt(keyboard.nextLine());
 		}
 		
@@ -76,7 +76,7 @@ public class Driver {
 		for (int index = 0; index < numRacers; ++index)
 		{
 			boolean pilotSelected = false;
-			System.out.println("Who is Pilot No. " + (index + 1) + "?");
+			System.out.println("PLAYER " + (index + 1) + ": CHOOSE YOUR PILOT");
 			remainingPilots.forEach(p -> System.out.println("| [" + p + "] |"));
 			
 			while(!pilotSelected)
@@ -153,7 +153,7 @@ public class Driver {
 		for (int index = 0; index < numRacers; ++index)
 		{
 			boolean shipSelected = false;
-			System.out.println("Which ship will Pilot No. " + (index + 1) + " fly?");
+			System.out.println("PLAYER " + (index + 1) + ": CHOOSE YOUR SHIP");
 			remainingShips.forEach(p -> System.out.println("| [" + p + "] |"));
 			
 			while (!shipSelected)
@@ -214,7 +214,7 @@ public class Driver {
 		}
 		
 		// Get number of mines from user input
-		System.out.println("How many mines will each racer start with?");
+		System.out.println("ENTER NUMBER of MINES");
 		startMines = keyboard.nextInt();
 		for (int index = 0; index < numRacers; ++index)
 		{
