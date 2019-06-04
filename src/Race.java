@@ -306,7 +306,7 @@ public class Race {
 		for (int index = 1; index < placing.size(); ++index)
 		{
 			rando = rand.nextInt(50);
-			System.out.println("ANNOUNCER: Coming up..." + placing.get(index).getPilotName() + "!!!");
+			System.out.println("ANNOUNCER: Coming up... " + placing.get(index).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
 			if (((placing.get(index).getShip().get(3)) + rando) >= 15)
 			{
@@ -376,7 +376,7 @@ public class Race {
 		for (int index = 1; index < placing.size(); ++index)
 		{
 			rando = rand.nextInt(50);
-			System.out.println("ANNOUNCER: Next up's..." + placing.get(index).getPilotName() + "!!!");
+			System.out.println("ANNOUNCER: Next up's... " + placing.get(index).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
 			if (((placing.get(index).getShip().get(1)) + rando) >= 15)
 			{
@@ -458,7 +458,12 @@ public class Race {
 		case (3) :			// ACCELERATION +1
 			{
 			placing.get(randPilot).getShip().set(1, placing.get(randPilot).getShip().get(1) + 1);
-			System.out.println("ANNOUNCER: What's this energy source manifesting on the track??");
+			System.out.print("ANNOUNCER: What's this energy source manifesting on the track?");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.print("?");
+			TimeUnit.SECONDS.sleep(PAUSE);
+			System.out.println("?");
+			TimeUnit.SECONDS.sleep(PAUSE);
 			System.out.println("ANNOUNCER: Looks like it wants to help out "
 					+ placing.get(randPilot).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
