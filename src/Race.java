@@ -66,7 +66,6 @@ public class Race {
 		TimeUnit.SECONDS.sleep(PAUSE*2);
 		System.out.println(); 				// BLANK SPACE
 		
-		
 		System.out.println("\nLAP " + (currLap + 1));
 		currSection = 0;
 		
@@ -152,7 +151,11 @@ public class Race {
 				++currSection;
 			}
 			++currLap;
+			
+			if (currLap < laps)
+			{
 			System.out.println("\nLAP " + (currLap + 1));
+			}
 			currSection = 0;
 		}
 		// Fill the finalPlacing with the remaining pilots in proper order, maintaining battered contestant list
@@ -199,10 +202,10 @@ public class Race {
 				
 				// TEST THIS ***********			
 				// (possibly checks how many racers are still in the race and might end the race)
-				//if (finalPlacing.size() < 2)
-				//{
-				//	currLap = 3;
-				//}
+				if (finalPlacing.size() == 1)
+				{
+					currLap = 3;
+				}
 				// TEST THIS ***********
 				return;
 			}
@@ -233,9 +236,45 @@ public class Race {
 							placing.remove(index);
 							finalPlacing.addAll(placing);
 							finalPlacing.add(tempPilot);
+							
+							// TEST THIS ***********			
+							// (possibly checks how many racers are still in the race and might end the race)
+							if (finalPlacing.size() == 1)
+							{
+								currLap = 3;
+							}
+							// TEST THIS ***********
 							return;
 						}
 			pilotAction(placing.get(index), currSection);
+						if (placing.get(index).getShip().get(4) < 0)
+						{
+							//currLap = 3;				// WHY WAS I DOING THIS?
+							
+							// Remove dead pilot from placing
+							System.out.print("ANNOUNCER: " + placing.get(index).getPilotName() + " is OUT of the race");
+							TimeUnit.MILLISECONDS.sleep(500);
+							System.out.print(".");
+							TimeUnit.MILLISECONDS.sleep(500);
+							System.out.print(".");
+							TimeUnit.MILLISECONDS.sleep(500);
+							System.out.println(".");
+							TimeUnit.SECONDS.sleep(PAUSE*2);
+							
+							Pilot tempPilot = placing.get(index);
+							placing.remove(index);
+							finalPlacing.addAll(placing);
+							finalPlacing.add(tempPilot);
+							
+							// TEST THIS ***********			
+							// (possibly checks how many racers are still in the race and might end the race)
+							if (finalPlacing.size() == 1)
+							{
+								currLap = 3;
+							}
+							// TEST THIS ***********
+							return;
+						}
 		}
 	}
 	
@@ -350,6 +389,13 @@ public class Race {
 		ArrayList<Pilot> tempPlacing = new ArrayList<Pilot>();
 		tempPlacing.addAll(placing);
 		
+		//////////
+		if (finalPlacing.size() == 1)
+		{
+			return;
+		}
+		//////////
+		
 		// TAKE THE TURN
 		int rando = rand.nextInt(50);
 		// FIRST PLACE
@@ -373,6 +419,12 @@ public class Race {
 		// ALL OTHERS
 		for (int index = 1; index < placing.size(); ++index)
 		{
+			//////////
+			if (finalPlacing.size() == 1)
+			{
+				return;
+			}
+			//////////
 			rando = rand.nextInt(50);
 			System.out.println("ANNOUNCER: Coming up... " + placing.get(index).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
@@ -416,6 +468,13 @@ public class Race {
 		ArrayList<Pilot> tempPlacing = new ArrayList<Pilot>();
 		tempPlacing.addAll(placing);
 		
+		//////////
+		if (finalPlacing.size() == 1)
+		{
+			return;
+		}
+		//////////
+		
 		// TAKE THE JUMP
 		int rando = rand.nextInt(50);
 		// FIRST PLACE
@@ -443,6 +502,14 @@ public class Race {
 		// ALL OTHERS
 		for (int index = 1; index < placing.size(); ++index)
 		{
+			
+			//////////
+			if (finalPlacing.size() == 1)
+			{
+				return;
+			}
+			//////////
+			
 			rando = rand.nextInt(50);
 			System.out.println("ANNOUNCER: Next up's... " + placing.get(index).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
@@ -487,7 +554,7 @@ public class Race {
 	public void takeEvent() throws InterruptedException
 	{
 		// EVENT
-		int randPilot = rand.nextInt(pilots.size() - 1);
+		int randPilot = rand.nextInt(finalPlacing.size() - 1);
 		int randEffect = rand.nextInt(4);
 		
 		switch (randEffect)
@@ -506,7 +573,7 @@ public class Race {
 			{
 			placing.get(randPilot).setMines(placing.get(randPilot).getMines() + 1);;
 			System.out.println("ANNOUNCER: Looks like "
-					+ placing.get(randPilot).getPilotName() + " was storing an extra mine!!!");
+					+ placing.get(randPilot).getPilotName() + " is storing an extra mine!!!");
 			TimeUnit.SECONDS.sleep(PAUSE*2);
 			break;
 			}
