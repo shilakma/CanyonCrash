@@ -80,7 +80,7 @@ public class Race {
 				// TODO: make it order battered contestants in order of their removal from race placing
 				for (int index = 0; index < placing.size(); ++index)
 				{
-					if (placing.get(index).getShip().get(4) <= 0)
+					if (placing.get(index).getShip().get(4) < 0)
 					{	
 						System.out.print("ANNOUNCER: " + placing.get(index).getPilotName() + " is OUT of the race");
 						TimeUnit.MILLISECONDS.sleep(500);
@@ -141,12 +141,12 @@ public class Race {
 					System.out.println("ANNOUNCER: Comin' up on a straightaway! "
 							+ "Should be smooth sailing from here...");
 					TimeUnit.SECONDS.sleep(PAUSE);
+					// Handle PilotAction by order in placing
+					preSection(currSection);
 					if (currLap >= laps)
 					{
 						return;
 					}
-					// Handle PilotAction by order in placing
-					preSection(currSection);
 					
 				}
 				++currSection;
@@ -177,11 +177,10 @@ public class Race {
 		
 		// Check for mines and run the mine dodge/damage
 		mineCheck(placing.get(0), currSection);
-		// PilotAction
 		// TODO: Check if first place pilot has 0 shields
 			if (placing.get(0).getShip().get(4) < 0)
 			{
-				currLap = 3;
+				//currLap = 3;				// WHY WAS I DOING THIS?
 				
 				// Remove dead pilot from placing
 				System.out.print("ANNOUNCER: " + placing.get(0).getPilotName() + " is OUT of the race");
@@ -199,34 +198,35 @@ public class Race {
 				finalPlacing.add(tempPilot);
 				return;
 			}
+		// PilotAction
 		pilotAction(placing.get(0), currSection);
 		for (int index = 1; index < placing.size(); ++index)
 		{
-			// TODO: Check if pilot has 0 shields
-			if (placing.get(index).getShip().get(4) < 0)
-			{
-				currLap = 3;
-				
-				// Remove dead pilot from placing
-				System.out.print("ANNOUNCER: " + placing.get(index).getPilotName() + " is OUT of the race");
-				TimeUnit.MILLISECONDS.sleep(500);
-				System.out.print(".");
-				TimeUnit.MILLISECONDS.sleep(500);
-				System.out.print(".");
-				TimeUnit.MILLISECONDS.sleep(500);
-				System.out.println(".");
-				TimeUnit.SECONDS.sleep(PAUSE*2);
-				
-				Pilot tempPilot = placing.get(index);
-				placing.remove(index);
-				finalPlacing.addAll(placing);
-				finalPlacing.add(tempPilot);
-				return;
-			}
 			System.out.println("ANNOUNCER: Next up... it's... "
 					+ placing.get(index).getPilotName() + "!!!");
 			TimeUnit.SECONDS.sleep(PAUSE);
 			mineCheck(placing.get(index), currSection);
+			// TODO: Check if pilot has 0 shields
+						if (placing.get(index).getShip().get(4) < 0)
+						{
+							//currLap = 3;				// WHY WAS I DOING THIS?
+							
+							// Remove dead pilot from placing
+							System.out.print("ANNOUNCER: " + placing.get(index).getPilotName() + " is OUT of the race");
+							TimeUnit.MILLISECONDS.sleep(500);
+							System.out.print(".");
+							TimeUnit.MILLISECONDS.sleep(500);
+							System.out.print(".");
+							TimeUnit.MILLISECONDS.sleep(500);
+							System.out.println(".");
+							TimeUnit.SECONDS.sleep(PAUSE*2);
+							
+							Pilot tempPilot = placing.get(index);
+							placing.remove(index);
+							finalPlacing.addAll(placing);
+							finalPlacing.add(tempPilot);
+							return;
+						}
 			pilotAction(placing.get(index), currSection);
 		}
 	}
@@ -479,7 +479,7 @@ public class Race {
 	public void takeEvent() throws InterruptedException
 	{
 		// EVENT
-		int randPilot = rand.nextInt(pilots.size());
+		int randPilot = rand.nextInt(pilots.size() - 1);
 		int randEffect = rand.nextInt(4);
 		
 		switch (randEffect)
