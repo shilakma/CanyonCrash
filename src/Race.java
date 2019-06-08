@@ -196,6 +196,14 @@ public class Race {
 				placing.remove(0);
 				finalPlacing.addAll(placing);
 				finalPlacing.add(tempPilot);
+				
+				// TEST THIS ***********			
+				// (possibly checks how many racers are still in the race and might end the race)
+				//if (finalPlacing.size() < 2)
+				//{
+				//	currLap = 3;
+				//}
+				// TEST THIS ***********
 				return;
 			}
 		// PilotAction
