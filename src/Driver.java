@@ -24,7 +24,7 @@ public class Driver {
 		boolean trackSelected = false;
 		String trackSelection = "";
 		
-		System.out.println("Which track will we be racing today?");
+		System.out.println("CHOOSE YOUR TRACK");
 		System.out.println("[Crash Canyon] || [Crag City] || [Big Rock Island] || [Outpost Pass]");
 		
 		while (!trackSelected)
@@ -132,7 +132,7 @@ public class Driver {
 					break;
 				}
 				
-				System.out.println("Who is Pilot No. " + (index + 1) + "?");
+				System.out.println("PLAYER " + (index + 1) + ": CHOOSE YOUR PILOT");
 				remainingPilots.forEach(p -> System.out.println("| [" + p + "] |"));
 				
 			}

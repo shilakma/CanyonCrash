@@ -181,7 +181,22 @@ public class Race {
 		// TODO: Check if first place pilot has 0 shields
 			if (placing.get(0).getShip().get(4) < 0)
 			{
-				currLap = 666;
+				currLap = 3;
+				
+				// Remove dead pilot from placing
+				System.out.print("ANNOUNCER: " + placing.get(0).getPilotName() + " is OUT of the race");
+				TimeUnit.MILLISECONDS.sleep(500);
+				System.out.print(".");
+				TimeUnit.MILLISECONDS.sleep(500);
+				System.out.print(".");
+				TimeUnit.MILLISECONDS.sleep(500);
+				System.out.println(".");
+				TimeUnit.SECONDS.sleep(PAUSE*2);
+				
+				Pilot tempPilot = placing.get(0);
+				placing.remove(0);
+				finalPlacing.addAll(placing);
+				finalPlacing.add(tempPilot);
 				return;
 			}
 		pilotAction(placing.get(0), currSection);
@@ -190,7 +205,22 @@ public class Race {
 			// TODO: Check if pilot has 0 shields
 			if (placing.get(index).getShip().get(4) < 0)
 			{
-				currLap = 666;
+				currLap = 3;
+				
+				// Remove dead pilot from placing
+				System.out.print("ANNOUNCER: " + placing.get(index).getPilotName() + " is OUT of the race");
+				TimeUnit.MILLISECONDS.sleep(500);
+				System.out.print(".");
+				TimeUnit.MILLISECONDS.sleep(500);
+				System.out.print(".");
+				TimeUnit.MILLISECONDS.sleep(500);
+				System.out.println(".");
+				TimeUnit.SECONDS.sleep(PAUSE*2);
+				
+				Pilot tempPilot = placing.get(index);
+				placing.remove(index);
+				finalPlacing.addAll(placing);
+				finalPlacing.add(tempPilot);
 				return;
 			}
 			System.out.println("ANNOUNCER: Next up... it's... "

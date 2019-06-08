@@ -109,7 +109,7 @@ public class Pilot implements Comparable<Pilot>{
 	}
 	
 	public String getShipName() {
-		return pilotName;
+		return shipName;
 	}
 
 	public void setShipName(String shipName) {
